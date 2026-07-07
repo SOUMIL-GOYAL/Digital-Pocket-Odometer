@@ -3,6 +3,7 @@
 #include <Adafruit_SSD1306.h>
 #include <ArduinoLowPower.h>
 
+
 // Screen Configuration
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -33,7 +34,7 @@ volatile unsigned long lastInteractionTime = 0;
 volatile bool pendingSingleClick = false;
 volatile unsigned long lastClickTime = 0;
 const unsigned long debounceDelay = 50;        // 50ms filter for mechanical button bounce
-const unsigned long doubleClickWindow = 350;   // 350ms max window between clicks for a double-click
+const unsigned long doubleClickWindow = 500;   // 350ms max window between clicks for a double-click
 
 // UI State
 bool showInches = false; // false = Centimeters, true = Inches
@@ -128,19 +129,21 @@ void loop() {
     // Render Dynamic Header Label based on current units
     display.setTextSize(1);
     display.setCursor(0, 4);
-    if (showInches) {
-      display.print("DISTANCE (INCHES)");
-    } else {
-      display.print("DISTANCE (CM)");
-    }
-    
+    display.print("POCKET ODOMETER");
     // Draw a divider graphic line
     display.drawFastHLine(0, 16, SCREEN_WIDTH, SSD1306_WHITE);
-    
-    // Render the calculated distance value with 2 decimal places
-    display.setTextSize(3);
+
+    display.setTextSize(2);
     display.setCursor(0, 28);
-    display.print(displayDistance, 2);
+
+  if (showInches) {
+    display.print(displayDistance * (-1.15), 2); // Prints float with 2 decimals
+    display.print(" in");               // Appends text right after the number
+  } else {
+    display.print(displayDistance* (-1.15), 2);
+    display.print(" cm");
+  }
+    
     
     display.display();
   }
